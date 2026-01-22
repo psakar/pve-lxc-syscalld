@@ -267,7 +267,7 @@ impl PidFd {
         Ok(out)
     }
 
-    pub fn user_caps(&self) -> Result<UserCaps, Error> {
+    pub fn user_caps(&self) -> Result<UserCaps<'_>, Error> {
         UserCaps::new(self)
     }
 }

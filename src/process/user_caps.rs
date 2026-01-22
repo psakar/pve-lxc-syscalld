@@ -53,7 +53,7 @@ pub struct UserCaps<'a> {
 }
 
 impl UserCaps<'_> {
-    pub fn new(pidfd: &PidFd) -> Result<UserCaps, Error> {
+    pub fn new(pidfd: &PidFd) -> Result<UserCaps<'_>, Error> {
         let status = pidfd.get_status()?;
         let cgroups = pidfd.get_cgroups()?;
         let apparmor_profile = crate::apparmor::get_label(pidfd)?;

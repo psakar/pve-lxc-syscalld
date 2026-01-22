@@ -68,13 +68,13 @@ pub struct ProxyMessageBuffer {
     mem_fd: Option<std::fs::File>,
 }
 
-unsafe fn io_vec_mut<T>(value: &mut T) -> IoSliceMut {
+unsafe fn io_vec_mut<T>(value: &mut T) -> IoSliceMut<'_> {
     IoSliceMut::new(unsafe {
         std::slice::from_raw_parts_mut(value as *mut T as *mut u8, mem::size_of::<T>())
     })
 }
 
-unsafe fn io_vec<T>(value: &T) -> IoSlice {
+unsafe fn io_vec<T>(value: &T) -> IoSlice<'_> {
     IoSlice::new(unsafe {
         std::slice::from_raw_parts(value as *const T as *const u8, mem::size_of::<T>())
     })

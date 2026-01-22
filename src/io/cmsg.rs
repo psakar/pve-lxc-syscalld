@@ -65,6 +65,6 @@ impl<'a> Iterator for RawCmsgIterator<'a> {
 }
 
 #[inline]
-pub fn iter(buf: &[u8]) -> RawCmsgIterator {
+pub fn iter(buf: &[u8]) -> RawCmsgIterator<'_> {
     RawCmsgIterator { buf }
 }
