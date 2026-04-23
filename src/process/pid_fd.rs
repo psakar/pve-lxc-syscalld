@@ -88,8 +88,8 @@ impl PidFd {
 
     pub fn enter_chroot(&self) -> io::Result<()> {
         c_try!(unsafe { libc::fchdir(self.as_raw_fd()) });
-        c_try!(unsafe { libc::chroot(b"root\0".as_ptr() as *const _) });
-        c_try!(unsafe { libc::chdir(b"/\0".as_ptr() as *const _) });
+        c_try!(unsafe { libc::chroot(c"root".as_ptr()) });
+        c_try!(unsafe { libc::chdir(c"/".as_ptr()) });
         Ok(())
     }
 
