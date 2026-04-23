@@ -121,11 +121,9 @@ impl PidFd {
             if parts.next() == Some("Pid:") {
                 let pid = parts
                     .next()
-                    .ok_or_else(|| io::Error::new(io::ErrorKind::Other, "bad 'Pid:' line in proc"))?
+                    .ok_or_else(|| io::Error::other("bad 'Pid:' line in proc"))?
                     .parse::<pid_t>()
-                    .map_err(|_| {
-                        io::Error::new(io::ErrorKind::Other, "failed to parse pid from proc")
-                    })?;
+                    .map_err(|_| io::Error::other("failed to parse pid from proc"))?;
                 return Ok(pid);
             }
         }
@@ -136,9 +134,9 @@ impl PidFd {
     #[inline]
     fn __check_uid_gid(value: Option<&str>) -> io::Result<libc::uid_t> {
         value
-            .ok_or_else(|| io::Error::new(io::ErrorKind::Other, "bad 'Uid/Gid:' line in proc"))?
+            .ok_or_else(|| io::Error::other("bad 'Uid/Gid:' line in proc"))?
             .parse::<libc::uid_t>()
-            .map_err(|_| io::Error::new(io::ErrorKind::Other, "failed to parse uid from proc"))
+            .map_err(|_| io::Error::other("failed to parse uid from proc"))
     }
 
     pub fn get_status(&self) -> io::Result<ProcStatus> {
@@ -147,9 +145,7 @@ impl PidFd {
         #[inline]
         fn check_u64_hex(value: Option<&str>) -> io::Result<u64> {
             u64::from_str_radix(
-                value.ok_or_else(|| {
-                    io::Error::new(io::ErrorKind::Other, "bad numeric property line in proc")
-                })?,
+                value.ok_or_else(|| io::Error::other("bad numeric property line in proc"))?,
                 16,
             )
             .map_err(io::Error::other)
@@ -158,9 +154,7 @@ impl PidFd {
         #[inline]
         fn check_u32_oct(value: Option<&str>) -> io::Result<u32> {
             u32::from_str_radix(
-                value.ok_or_else(|| {
-                    io::Error::new(io::ErrorKind::Other, "bad numeric property line in proc")
-                })?,
+                value.ok_or_else(|| io::Error::other("bad numeric property line in proc"))?,
                 8,
             )
             .map_err(io::Error::other)

@@ -81,10 +81,7 @@ impl SeccompNotifSizes {
             || usize::from(self.notif_resp) != mem::size_of::<SeccompNotifResp>()
             || usize::from(self.data) != mem::size_of::<SeccompData>()
         {
-            Err(io::Error::new(
-                io::ErrorKind::Other,
-                "seccomp data structure size mismatch",
-            ))
+            Err(io::Error::other("seccomp data structure size mismatch"))
         } else {
             Ok(())
         }

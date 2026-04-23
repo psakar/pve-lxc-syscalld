@@ -128,10 +128,7 @@ impl Fork {
         }
 
         if status != 0 {
-            Err(io::Error::new(
-                io::ErrorKind::Other,
-                "error in child process",
-            ))
+            Err(io::Error::other("error in child process"))
         } else {
             Ok(())
         }
