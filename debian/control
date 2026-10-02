@@ -28,6 +28,7 @@ Rules-Requires-Root: no
 
 Package: pve-lxc-syscalld
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends},
 Breaks: pve-container (<< 6.0.5)
 Description: PVE LXC syscall daemon

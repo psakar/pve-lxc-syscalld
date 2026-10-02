@@ -17,8 +17,41 @@ export CARGO_HOME = $(CURDIR)/debian/cargo_home
 export DEB_CARGO_CRATE=pve-lxc-syscalld_$(DEB_VERSION_UPSTREAM)
 export DEB_CARGO_PACKAGE=pve-lxc-syscalld
 
+# The pkg.pve-lxc-syscalld.lsbservice build profile is for Devuan and other
+# systemd-free Debian derivatives (see pve-common's and pve-manager's
+# pkg.*.lsbservice profiles): it installs an LSB init script, generated from
+# etc/pve-lxc-syscalld.init.in, instead of the systemd unit. To build this
+# variant, run:
+#   dpkg-buildpackage -b -us -uc -Ppkg.pve-lxc-syscalld.lsbservice
+ifneq (,$(filter pkg.pve-lxc-syscalld.lsbservice,$(DEB_BUILD_PROFILES)))
+LSBSERVICE = 1
+endif
+
 %:
 	dh $@
+
+ifdef LSBSERVICE
+override_dh_install:
+	dh_install
+	rm -f debian/pve-lxc-syscalld/usr/lib/systemd/system/pve-lxc-syscalld.service
+	rmdir -p --ignore-fail-on-non-empty debian/pve-lxc-syscalld/usr/lib/systemd/system
+
+override_dh_installsystemd:
+
+execute_before_dh_installinit:
+	cp etc/pve-lxc-syscalld.init debian/pve-lxc-syscalld.init
+
+override_dh_lintian:
+	dh_lintian
+	install -d debian/pve-lxc-syscalld/usr/share/lintian/overrides
+	cat debian/pve-lxc-syscalld.lintian-overrides.lsbservice \
+	    >>debian/pve-lxc-syscalld/usr/share/lintian/overrides/pve-lxc-syscalld
+
+execute_after_dh_clean:
+	rm -f debian/pve-lxc-syscalld.init
+else
+override_dh_installinit:
+endif
 
 override_dh_auto_configure:
 	@perl -ne 'if (/^version\s*=\s*"(\d+(?:\.\d+)+)"/) { my $$v_cargo = $$1; my $$v_deb = "$(DEB_VERSION_UPSTREAM)"; \

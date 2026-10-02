@@ -2,3 +2,4 @@ Cargo.lock
 /target
 **/*.rs.bk
 /etc/pve-lxc-syscalld.service
+/etc/pve-lxc-syscalld.init
